@@ -13,15 +13,9 @@ import image9 from "./assets/image-9.jpg";
 import image10 from "./assets/image-10.jpg";
 import image11 from "./assets/image-11.jpg";
 import { useDrag, useDrop } from "react-dnd";
+import styles from './styles/App.module.css'
 
-function DraggableImage({
-  img,
-  index,
-  moveImage,
-  handleFileSelect,
-  isSelected,
-  deletingIndices,
-}) {
+const DraggableImage = ({ img, index, moveImage, handleFileSelect, isSelected, deletingIndices }) =>  {
   const [, ref] = useDrag({
     type: "IMAGE",
     item: { index },
@@ -41,43 +35,20 @@ function DraggableImage({
   return (
     <div
       ref={(node) => ref(drop(node))}
-      style={{
-        position: "relative",
-        width: "100%",
-        height: "100%",
-        overflow: "hidden",
-        opacity: deletingIndices && deletingIndices.includes(index) ? 0 : 1,
-        transition: "opacity 300ms ease-in-out filter 0.3s",
-        filter: hover ? "brightness(0.7)" : "none",
-      }}
+      className={`
+      ${styles.draggableContainer} 
+      ${deletingIndices && deletingIndices.includes(index) ? styles.deleting : ''}
+      ${hover ? styles.hoverEffect : ''}
+        `}
     >
       <img
-        src={img.src}
-        alt={img.alt}
-        style={{
-          width: "100%",
-          height: "100%",
-          objectFit: "cover",
-          cursor: "pointer",
-          opacity: isSelected ? 0.7 : 1,
-          transition: "filter 0.3s",
-          
-        }}
+        src={img.src} alt={img.alt} className={`${styles.image} ${isSelected ? styles.imageSelected : ''}`}
         onMouseEnter={() => setHover(true)}
         onMouseLeave={() => setHover(false)}
         onClick={() => handleFileSelect(index)}
       />
       {isSelected && (
-        <div
-          style={{
-            position: "absolute",
-            top: "5px",
-            left: "5px",
-            background: "rgba(255, 255, 255, 0.5)",
-            padding: "2px",
-            borderRadius: "50%",
-          }}
-        >
+        <div className={styles.selectionIndicator}>
           ✔️
         </div>
       )}
@@ -164,41 +135,17 @@ function App() {
     setFileInputVisible(false);
   };
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
-        marginTop: "30px",
-      }}
-    >
-      <div
-        style={{
-          borderTop: "1px solid lightgray",
-          borderBottom: "1px solid lightgray",
-          width: "57.5rem",
-          marginBottom: "10px",
-          padding: "10px 0 10px 0",
-        }}
-      >
+    <div className={styles.container}>
+      <div className={styles.header}>
         <span>
           {selectedFiles.length === 0 ? (
-           <span style={{fontWeight:"bold" , fontSize:"20px"}}>Gallery</span>
+            <span className={`${styles.bold} ${styles.fontSize20}`}>Gallery</span>
           ) : (
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                fontSize:"20px"
-              }}
-            >
-              <span style={{fontWeight:"bold"}}>{selectedFiles.length + " files Selected"}</span>
-              <span
-                style={{ color: "red", cursor: "pointer" }}
-                onClick={handleDeleteSelected}
-              >
+            <div className={styles.flexSpaceBetween}>
+              <span className={styles.bold}>
+                {selectedFiles.length + " files Selected"}
+              </span>
+              <span className={`${styles.colorRed} ${styles.cursorPointer}`} onClick={handleDeleteSelected}>
                 Delete files
               </span>
             </div>
@@ -206,27 +153,9 @@ function App() {
         </span>
       </div>
 
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(5, 1fr)",
-          gap: "40px",
-          maxWidth: "1000px",
-          gridAutoRows: "150px",
-        }}
-      >
-        {/* Conditional rendering for first image or message if no images */}
+      <div className={styles.imageGrid}>
         {images[0] ? (
-          <div
-            style={{
-              gridArea: "1 / 1 / 3 / 3",
-              borderRadius: "10px",
-              overflow: "hidden",
-              width: "100%",
-              height: "100%",
-              border: "1px solid lightgray",
-            }}
-          >
+          <div className={styles.mainImageContainer}>
             <DraggableImage
               key={0}
               img={images[0]}
@@ -238,22 +167,13 @@ function App() {
             />
           </div>
         ) : (
-          <div
-            style={{
-              gridArea: "1 / 1 / 3 / 3",
-              borderRadius: "10px",
-              overflow: "hidden",
-              width: "100%",
-              height: "100%",
-            }}
-          >
+          <div className={styles.mainImageContainer}>
             No images available.
           </div>
         )}
 
-        {/* Map remaining images */}
         {images.slice(1).map((img, index) => (
-          <div style={{ borderRadius: "10px", overflow: "hidden" ,border: "1px solid lightgray",}}>
+          <div className={styles.imageContainer}>
             <DraggableImage
               key={index + 1}
               img={img}
@@ -265,133 +185,23 @@ function App() {
             />
           </div>
         ))}
-        {/* Always display Add Image */}
+
         {isFileInputVisible && (
           <input
             type="file"
             onChange={handleFileChange}
-            style={{ display: "none" }}
+            style={{ display: 'none' }}
             ref={(input) => input && input.click()}
           />
         )}
-        <div
-          style={{
-            borderRadius: "10px",
-            overflow: "hidden",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-          onClick={() => setFileInputVisible(true)}
-        >
-          <div
-            style={{
-              width: "100%",
-              height: "100%",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              background: "#e0e0e0",
-              cursor: "pointer",
-            }}
-          >
+        <div className={styles.addImageContainer} onClick={() => setFileInputVisible(true)}>
+          <div className={styles.addImageInner}>
             + Add Image
           </div>
         </div>
       </div>
     </div>
   );
-
-  // return (
-  //   <div
-  //     style={{
-  //       display: "flex",
-  //       flexDirection: "column",
-  //       justifyContent: "center",
-  //       alignItems: "center",
-  //     }}
-  //   >
-  //     <div>
-  //       <span>{selectedFiles.length} Files Selected</span>
-  //       <button onClick={handleDeleteSelected}>Delete files</button>
-  //     </div>
-
-  //     <div
-  //       style={{
-  //         display: "grid",
-  //         gridTemplateColumns: "repeat(5, 1fr)",
-  //         gap: "40px",
-  //         maxWidth: "1000px",
-  //         gridAutoRows: "150px", // Set the default height for the grid rows
-  //       }}
-  //     >
-  //       <div
-  //         style={{
-  //           gridArea: "1 / 1 / 3 / 3",
-  //           borderRadius: "10px",
-  //           overflow: "hidden",
-  //           width: "100%",
-  //           height: "100%",
-  //         }}
-  //       >
-  //         <DraggableImage
-  //           key={0}
-  //           img={images[0]}
-  //           index={0}
-  //           moveImage={moveImage}
-  //           handleFileSelect={handleFileSelect}
-  //           isSelected={selectedFiles.includes(0)}
-  //         />
-  //       </div>
-  //       {images.slice(1).map((img, index) => (
-  //         <div style={{ borderRadius: "10px", overflow: "hidden" }}>
-  //           <DraggableImage
-  //             key={index + 1}
-  //             img={img}
-  //             index={index + 1}
-  //             moveImage={moveImage}
-  //             handleFileSelect={handleFileSelect}
-  //             isSelected={selectedFiles.includes(index + 1)}
-  //             deletingIndices={deletingIndices}
-  //           />
-  //         </div>
-  //       ))}
-  //       {isFileInputVisible && (
-  //         <input
-  //           type="file"
-  //           onChange={handleFileChange}
-  //           style={{ display: "none" }}
-  //           ref={(input) => input && input.click()}
-  //         />
-  //       )}
-
-  //       <div
-  //         style={{
-  //           borderRadius: "10px",
-  //           overflow: "hidden",
-  //           display: "flex",
-  //           justifyContent: "center",
-  //           alignItems: "center",
-  //         }}
-  //         onClick={() => setFileInputVisible(true)}
-  //       >
-  //         <div
-  //           style={{
-  //             width: "100%",
-  //             height: "100%",
-  //             display: "flex",
-  //             alignItems: "center",
-  //             justifyContent: "center",
-  //             background: "#e0e0e0",
-  //             cursor: "pointer",
-  //           }}
-  //         >
-  //           + Add Image
-  //         </div>
-  //       </div>
-  //     </div>
-  //   </div>
-  // );
 }
 
 export default App;
