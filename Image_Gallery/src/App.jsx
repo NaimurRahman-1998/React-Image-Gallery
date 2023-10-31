@@ -93,6 +93,7 @@ function App() {
   };
   return (
     <div className={styles.container}>
+       {/* Header */}
       <div className={styles.header}>
         <span>
           {selectedFiles.length === 0 ? (
@@ -109,8 +110,10 @@ function App() {
           )}
         </span>
       </div>
-
+      
+      {/* Image Grid */}
       <div className={styles.imageGrid}>
+        {/* Displaying Feature Image */}
         {images[0] ? (
           <div className={styles.mainImageContainer}>
             <DraggableImage
@@ -129,6 +132,8 @@ function App() {
           </div>
         )}
 
+
+        {/* Mapping through rest of the images  */}
         {images.slice(1).map((img, index) => (
           <div className={styles.imageContainer}>
             <DraggableImage
@@ -143,6 +148,7 @@ function App() {
           </div>
         ))}
 
+         {/* File input for adding new images */}
         {isFileInputVisible && (
           <input
             type="file"
@@ -151,6 +157,8 @@ function App() {
             ref={(input) => input && input.click()}
           />
         )}
+        
+        {/* Add Image Button */}
         <div className={styles.addImageContainer} onClick={() => setFileInputVisible(true)}>
           <div className={styles.addImageInner}>
             <LiaImageSolid /> Add Images
