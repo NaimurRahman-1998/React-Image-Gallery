@@ -16,6 +16,8 @@ import { useDrag, useDrop } from "react-dnd";
 import styles from './styles/App.module.css'
 
 const DraggableImage = ({ img, index, moveImage, handleFileSelect, isSelected, deletingIndices }) =>  {
+  const [hover, setHover] = useState(false);
+
   const [, ref] = useDrag({
     type: "IMAGE",
     item: { index },
@@ -30,8 +32,7 @@ const DraggableImage = ({ img, index, moveImage, handleFileSelect, isSelected, d
       }
     },
   });
-  const [hover, setHover] = useState(false);
-
+  
   return (
     <div
       ref={(node) => ref(drop(node))}

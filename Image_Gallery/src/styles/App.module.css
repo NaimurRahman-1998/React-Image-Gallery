@@ -34,6 +34,12 @@
   .opacity-0 {
     opacity: 0;
   }
+
+  .dragging {
+    transition: all 0.3s ease;
+    transform: scale(1.1);
+    z-index: 2;
+  }
   
   /* Main App */
   .container {
