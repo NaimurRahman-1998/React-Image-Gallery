@@ -14,9 +14,11 @@ import image10 from "./assets/image-10.jpg";
 import image11 from "./assets/image-11.jpg";
 import { useDrag, useDrop } from "react-dnd";
 import styles from './styles/App.module.css'
+import { LiaImageSolid } from 'react-icons/lia';
 
 const DraggableImage = ({ img, index, moveImage, handleFileSelect, isSelected, deletingIndices }) =>  {
   const [hover, setHover] = useState(false);
+  const [postDrag, setPostDrag] = useState(false);
 
   const [, ref] = useDrag({
     type: "IMAGE",
@@ -29,9 +31,11 @@ const DraggableImage = ({ img, index, moveImage, handleFileSelect, isSelected, d
       if (item.index !== index) {
         moveImage(item.index, index);
         item.index = index;
+        setPostDrag(true);
+        setTimeout(() => setPostDrag(false), 300); // for 0.5 seconds
       }
     },
-  });
+});
   
   return (
     <div
@@ -40,6 +44,7 @@ const DraggableImage = ({ img, index, moveImage, handleFileSelect, isSelected, d
       ${styles.draggableContainer} 
       ${deletingIndices && deletingIndices.includes(index) ? styles.deleting : ''}
       ${hover ? styles.hoverEffect : ''}
+      ${postDrag ? styles.postDragEffect : ''}
         `}
     >
       <img
@@ -50,7 +55,7 @@ const DraggableImage = ({ img, index, moveImage, handleFileSelect, isSelected, d
       />
       {isSelected && (
         <div className={styles.selectionIndicator}>
-          ✔️
+          <input type="checkbox" checked />
         </div>
       )}
     </div>
@@ -144,7 +149,7 @@ function App() {
           ) : (
             <div className={styles.flexSpaceBetween}>
               <span className={styles.bold}>
-                {selectedFiles.length + " files Selected"}
+                <input type="checkbox" checked /> {selectedFiles.length + " files Selected"}
               </span>
               <span className={`${styles.colorRed} ${styles.cursorPointer}`} onClick={handleDeleteSelected}>
                 Delete files
@@ -197,7 +202,7 @@ function App() {
         )}
         <div className={styles.addImageContainer} onClick={() => setFileInputVisible(true)}>
           <div className={styles.addImageInner}>
-            + Add Image
+            <LiaImageSolid /> Add Images
           </div>
         </div>
       </div>
