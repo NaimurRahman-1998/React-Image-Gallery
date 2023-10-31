@@ -12,55 +12,9 @@ import image8 from "./assets/image-8.jpg";
 import image9 from "./assets/image-9.jpg";
 import image10 from "./assets/image-10.jpg";
 import image11 from "./assets/image-11.jpg";
-import { useDrag, useDrop } from "react-dnd";
 import styles from './styles/App.module.css'
 import { LiaImageSolid } from 'react-icons/lia';
-
-const DraggableImage = ({ img, index, moveImage, handleFileSelect, isSelected, deletingIndices }) =>  {
-  const [hover, setHover] = useState(false);
-  const [postDrag, setPostDrag] = useState(false);
-
-  const [, ref] = useDrag({
-    type: "IMAGE",
-    item: { index },
-  });
-
-  const [, drop] = useDrop({
-    accept: "IMAGE",
-    hover(item) {
-      if (item.index !== index) {
-        moveImage(item.index, index);
-        item.index = index;
-        setPostDrag(true);
-        setTimeout(() => setPostDrag(false), 300); // for 0.5 seconds
-      }
-    },
-});
-  
-  return (
-    <div
-      ref={(node) => ref(drop(node))}
-      className={`
-      ${styles.draggableContainer} 
-      ${deletingIndices && deletingIndices.includes(index) ? styles.deleting : ''}
-      ${hover ? styles.hoverEffect : ''}
-      ${postDrag ? styles.postDragEffect : ''}
-        `}
-    >
-      <img
-        src={img.src} alt={img.alt} className={`${styles.image} ${isSelected ? styles.imageSelected : ''}`}
-        onMouseEnter={() => setHover(true)}
-        onMouseLeave={() => setHover(false)}
-        onClick={() => handleFileSelect(index)}
-      />
-      {isSelected && (
-        <div className={styles.selectionIndicator}>
-          <input type="checkbox" checked />
-        </div>
-      )}
-    </div>
-  );
-}
+import DraggableImage from "./components/DraggableImage";
 
 function App() {
   const [selectedFiles, setSelectedFiles] = useState([]);
@@ -96,7 +50,6 @@ function App() {
     const [movedItem] = updatedImages.splice(fromIndex, 1);
     updatedImages.splice(toIndex, 0, movedItem);
 
-    // Update selected files
     const updatedSelectedFiles = selectedFiles.map((idx) =>
       idx === fromIndex
         ? toIndex
@@ -112,18 +65,16 @@ function App() {
   };
 
   const handleDeleteSelected = () => {
-    // Mark the selected images as being in the process of deletion
     setDeletingIndices(selectedFiles);
 
-    // Wait for the transition duration, then remove the images
     setTimeout(() => {
       const updatedImages = images.filter(
         (_, index) => !selectedFiles.includes(index)
       );
       setImages(updatedImages);
       setSelectedFiles([]);
-      setDeletingIndices([]); // Clear the deleting indices
-    }, 300); // Assuming 300ms is your transition duration. Adjust as needed.
+      setDeletingIndices([]); 
+    }, 300); 
   };
 
   const handleFileChange = (e) => {
