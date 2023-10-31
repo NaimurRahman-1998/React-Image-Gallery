@@ -132,3 +132,37 @@
     opacity: 0;
     transition: opacity 300ms ease-in-out;
   }
+
+
+
+  @media screen and (max-width: 1024px) {
+    .imageGrid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+    .header {
+      width: 40.5rem;
+    }
+    /* Add more tablet-specific styles here */
+  }
+  
+  /* Media Queries for Mobile Screen */
+  @media screen and (max-width: 768px) {
+    .imageGrid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .header {
+      width: 25.5rem;
+    }
+    /* Add more mobile-specific styles here */
+  }
+  
+  /* Media Queries for Smaller Mobile Screen */
+  @media screen and (max-width: 480px) {
+    .imageGrid {
+      grid-template-columns: 1fr;
+    }
+    .header {
+      width: 20.5rem;
+    }
+    /* Add more smaller mobile-specific styles here */
+  }
